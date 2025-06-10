@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Call</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons for buttons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%);
+    }
+    .glass {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15);
+    }
+    .call-shadow {
+      box-shadow: 0 4px 24px 0 rgba(16,185,129,0.15);
+    }
+    .phosphor-icon {
+      transition: transform 0.15s;
+    }
+    .phosphor-icon:hover {
+      transform: scale(1.15) rotate(-8deg);
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col font-sans">
+  <!-- Header -->
+  <header class="glass p-4 flex items-center justify-between shadow-md rounded-b-lg">
+    <div class="flex items-center space-x-3">
+      <phosphor-icon name="video-camera" weight="fill" class="w-7 h-7 text-green-500"></phosphor-icon>
+      <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Video Call</h1>
+    </div>
+    <button id="closeBtn" class="hover:bg-red-100 rounded-full p-2 transition">
+      <phosphor-icon name="x" weight="bold" class="w-7 h-7 text-gray-500"></phosphor-icon>
+    </button>
+  </header>
+
+  <!-- Video Containers -->
+  <main class="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div class="relative glass rounded-2xl overflow-hidden call-shadow flex flex-col items-center justify-center">
+      <canvas id="remoteCanvas" width="320" height="240" class="w-full h-64 rounded-lg border-4 border-green-100 bg-black"></canvas>
+      <span class="absolute top-3 left-3 bg-green-600/90 text-white text-xs px-3 py-1 rounded-full shadow">Remote</span>
+    </div>
+    <div class="relative flex flex-col items-end justify-end">
+      <div class="glass rounded-xl overflow-hidden call-shadow border-2 border-white absolute bottom-6 right-6 z-10">
+        <canvas id="localCanvas" width="160" height="120" class="w-36 h-24 rounded-lg bg-black"></canvas>
+        <span class="absolute top-2 left-2 bg-gray-800/80 text-white text-xs px-2 py-1 rounded shadow">You</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Controls -->
+  <footer class="glass p-6 shadow-inner flex items-center justify-center space-x-6 rounded-t-lg">
+    <button id="startBtn" class="bg-white border-2 border-green-500 text-green-600 hover:bg-green-500 hover:text-white transition px-6 py-2 rounded-full flex items-center space-x-2 font-semibold shadow">
+      <phosphor-icon name="camera" weight="bold" class="w-6 h-6"></phosphor-icon>
+      <span>Start</span>
+    </button>
+    <button id="callBtn" disabled class="bg-green-500 text-white opacity-50 cursor-not-allowed transition px-6 py-2 rounded-full flex items-center space-x-2 font-semibold shadow">
+      <phosphor-icon name="phone" weight="bold" class="w-6 h-6"></phosphor-icon>
+      <span>Call</span>
+    </button>
+    <button id="answerBtn" disabled class="bg-blue-500 text-white opacity-50 cursor-not-allowed transition px-6 py-2 rounded-full flex items-center space-x-2 font-semibold shadow">
+      <phosphor-icon name="phone-call" weight="bold" class="w-6 h-6"></phosphor-icon>
+      <span>Answer</span>
+    </button>
+  </footer>
+
+  <!-- Signaling Box (Hidden by default) -->
+  <div class="fixed inset-0 flex items-center justify-center z-50 bg-black/30 hidden" id="signalModal">
+    <div class="glass w-11/12 md:w-2/3 lg:w-1/2 rounded-2xl p-6 shadow-2xl border border-green-100">
+      <h2 class="text-xl font-semibold mb-3 text-green-700 flex items-center space-x-2">
+        <phosphor-icon name="key" weight="bold" class="w-6 h-6"></phosphor-icon>
+        <span>Signal Data</span>
+      </h2>
+      <textarea id="signalBox" rows="6" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-green-400 transition" placeholder="Paste SDP here…"></textarea>
+      <div class="flex justify-end space-x-2">
+        <button id="closeSignal" class="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 font-medium transition">Close</button>
+      </div>
+    </div>
+  </div>
+  <script src="js/webrtc-canvas.js"></script>
+  <script>
+    // Optional: Close modal with header button
+    document.getElementById('closeBtn').onclick = () => window.history.back();
+  </script>
+</body>
+</html>
