@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login & Registration Form</title>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -24,7 +26,7 @@
         .container {
             position: relative;
             width: 400px;
-            height: 500px;
+            height: 550px; /* Increased height to accommodate additional field */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -80,12 +82,12 @@
         .input-group {
             position: relative;
             width: 100%;
-            margin-bottom: 30px;
+            margin-bottom: 25px; /* Reduced margin to fit more fields */
         }
 
         .input-group input {
             width: 100%;
-            padding: 15px 20px;
+            padding: 15px 45px 15px 45px;
             outline: none;
             border: none;
             border-radius: 35px;
@@ -93,7 +95,7 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             border-right: 1px solid rgba(255, 255, 255, 0.2);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
+            color: #ffffff;
             font-size: 16px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
@@ -105,7 +107,7 @@
         .input-group label {
             position: absolute;
             top: 50%;
-            left: 20px;
+            left: 45px;
             transform: translateY(-50%);
             color: rgba(255, 255, 255, 0.7);
             pointer-events: none;
@@ -115,7 +117,7 @@
         .input-group input:focus + label,
         .input-group input:valid + label {
             top: 0;
-            left: 15px;
+            left: 40px;
             font-size: 12px;
             background: #667eea;
             padding: 0 5px;
@@ -136,7 +138,7 @@
         }
 
         .btn:hover {
-            background: #f0f0f0;
+            background: #272424;
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
@@ -148,7 +150,7 @@
         }
 
         .toggle-form a {
-            color: #fff;
+            color: #f3f3f3;
             text-decoration: none;
             font-weight: 600;
             transition: 0.3s;
@@ -215,6 +217,46 @@
                 opacity: 0;
             }
         }
+
+        /* Icon styles */
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(39, 36, 36, 0.7);
+            font-size: 18px;
+        }
+
+        /* Password toggle icon */
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(15, 15, 15, 0.7);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: #332f2f;
+        }
+
+        /* Phone number prefix style */
+        .phone-prefix {
+            position: absolute;
+            left: 45px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(247, 240, 240, 0.7);
+            pointer-events: none;
+        }
+
+        .phone-input {
+            padding-left: 80px !important;
+        }
     </style>
 </head>
 <body>
@@ -229,12 +271,15 @@
             <form>
                 <h2>Login</h2>
                 <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
                     <input type="text" required>
                     <label>Username</label>
                 </div>
                 <div class="input-group">
-                    <input type="password" required>
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="login-password" required>
                     <label>Password</label>
+                    <i class="fas fa-eye password-toggle" id="toggle-login-password"></i>
                 </div>
                 <button type="submit" class="btn">Login</button>
                 <div class="toggle-form">
@@ -247,20 +292,32 @@
             <form>
                 <h2>Register</h2>
                 <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
                     <input type="text" required>
                     <label>Username</label>
                 </div>
                 <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
                     <input type="email" required>
                     <label>Email</label>
                 </div>
                 <div class="input-group">
-                    <input type="password" required>
-                    <label>Password</label>
+                    <i class="fas fa-phone input-icon"></i>
+                    <span class="phone-prefix">+255</span>
+                    <input type="tel" class="phone-input" required pattern="[0-9]{9}" title="Please enter 9 digits after +255" placeholder="712345678">
+                    <label>Phone Number</label>
                 </div>
                 <div class="input-group">
-                    <input type="password" required>
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="register-password" required>
+                    <label>Password</label>
+                    <i class="fas fa-eye password-toggle" id="toggle-register-password"></i>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-check-circle input-icon"></i>
+                    <input type="password" id="confirm-password" required>
                     <label>Confirm Password</label>
+                    <i class="fas fa-eye password-toggle" id="toggle-confirm-password"></i>
                 </div>
                 <button type="submit" class="btn">Register</button>
                 <div class="toggle-form">
@@ -285,6 +342,24 @@
                 e.preventDefault();
                 container.classList.remove('active');
             });
+
+            // Password toggle functionality
+            function setupPasswordToggle(toggleId, passwordId) {
+                const toggle = document.getElementById(toggleId);
+                const password = document.getElementById(passwordId);
+                
+                toggle.addEventListener('click', function() {
+                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                    password.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+
+            // Set up password toggles
+            setupPasswordToggle('toggle-login-password', 'login-password');
+            setupPasswordToggle('toggle-register-password', 'register-password');
+            setupPasswordToggle('toggle-confirm-password', 'confirm-password');
 
             // Create floating circles
             function createCircles() {
@@ -320,19 +395,21 @@
             inputs.forEach(input => {
                 input.addEventListener('focus', function() {
                     const label = this.nextElementSibling;
-                    label.style.top = '0';
-                    label.style.left = '15px';
-                    label.style.fontSize = '12px';
-                    label.style.background = '#667eea';
-                    label.style.padding = '0 5px';
-                    label.style.borderRadius = '10px';
+                    if (label && label.tagName === 'LABEL') {
+                        label.style.top = '0';
+                        label.style.left = this.classList.contains('phone-input') ? '80px' : '40px';
+                        label.style.fontSize = '12px';
+                        label.style.background = '#667eea';
+                        label.style.padding = '0 5px';
+                        label.style.borderRadius = '10px';
+                    }
                 });
 
                 input.addEventListener('blur', function() {
                     const label = this.nextElementSibling;
-                    if (!this.value) {
+                    if (label && label.tagName === 'LABEL' && !this.value) {
                         label.style.top = '50%';
-                        label.style.left = '20px';
+                        label.style.left = this.classList.contains('phone-input') ? '80px' : '45px';
                         label.style.fontSize = '16px';
                         label.style.background = 'transparent';
                         label.style.padding = '0';
@@ -340,6 +417,20 @@
                     }
                 });
             });
+
+            // Phone number validation
+            const phoneInput = document.querySelector('.phone-input');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function() {
+                    // Remove any non-digit characters
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Limit to 9 digits
+                    if (this.value.length > 9) {
+                        this.value = this.value.slice(0, 9);
+                    }
+                });
+            }
         });
     </script>
 </body>
