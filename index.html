@@ -1,92 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Video Call</title>
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Phosphor Icons for buttons -->
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <style>
-    body {
-      background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%);
-    }
-    .glass {
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15);
-    }
-    .call-shadow {
-      box-shadow: 0 4px 24px 0 rgba(16,185,129,0.15);
-    }
-    .phosphor-icon {
-      transition: transform 0.15s;
-    }
-    .phosphor-icon:hover {
-      transform: scale(1.15) rotate(-8deg);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .form-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            transition: 0.5s;
+        }
+
+        .login-form {
+            transform: translateX(0);
+            opacity: 1;
+            transition-delay: 0.3s;
+        }
+
+        .register-form {
+            transform: translateX(100%);
+            opacity: 0;
+            transition-delay: 0s;
+        }
+
+        .container.active .login-form {
+            transform: translateX(-100%);
+            opacity: 0;
+            transition-delay: 0s;
+        }
+
+        .container.active .register-form {
+            transform: translateX(0);
+            opacity: 1;
+            transition-delay: 0.3s;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            outline: none;
+            border: none;
+            border-radius: 35px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:valid + label {
+            top: 0;
+            left: 15px;
+            font-size: 12px;
+            background: #667eea;
+            padding: 0 5px;
+            border-radius: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px 0;
+            border: none;
+            border-radius: 35px;
+            background: #fff;
+            color: #666;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-form {
+            margin-top: 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .toggle-form a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+
+        .circle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: animate 15s linear infinite;
+        }
+
+        .circle:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 20%;
+        }
+
+        .circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 70%;
+            animation-delay: 2s;
+        }
+
+        .circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 10%;
+            animation-delay: 4s;
+        }
+
+        .circle:nth-child(4) {
+            width: 120px;
+            height: 120px;
+            top: 20%;
+            right: 15%;
+            animation-delay: 6s;
+        }
+
+        .circle:nth-child(5) {
+            width: 60px;
+            height: 60px;
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 8s;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
-<body class="h-screen flex flex-col font-sans">
-  <!-- Header -->
-  <header class="glass p-4 flex items-center justify-between shadow-md rounded-b-lg">
-    <div class="flex items-center space-x-3">
-      <phosphor-icon name="video-camera" weight="fill" class="w-7 h-7 text-green-500"></phosphor-icon>
-      <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Video Call</h1>
-    </div>
-    <button id="closeBtn" class="hover:bg-red-100 rounded-full p-2 transition">
-      <phosphor-icon name="x" weight="bold" class="w-7 h-7 text-gray-500"></phosphor-icon>
-    </button>
-  </header>
+<body>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
 
-  <!-- Video Containers -->
-  <main class="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-    <div class="relative glass rounded-2xl overflow-hidden call-shadow flex flex-col items-center justify-center">
-      <canvas id="remoteCanvas" width="320" height="240" class="w-full h-64 rounded-lg border-4 border-green-100 bg-black"></canvas>
-      <span class="absolute top-3 left-3 bg-green-600/90 text-white text-xs px-3 py-1 rounded-full shadow">Remote</span>
-    </div>
-    <div class="relative flex flex-col items-end justify-end">
-      <div class="glass rounded-xl overflow-hidden call-shadow border-2 border-white absolute bottom-6 right-6 z-10">
-        <canvas id="localCanvas" width="160" height="120" class="w-36 h-24 rounded-lg bg-black"></canvas>
-        <span class="absolute top-2 left-2 bg-gray-800/80 text-white text-xs px-2 py-1 rounded shadow">You</span>
-      </div>
-    </div>
-  </main>
+    <div class="container">
+        <div class="form-container login-form">
+            <form>
+                <h2>Login</h2>
+                <div class="input-group">
+                    <input type="text" required>
+                    <label>Username</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="toggle-form">
+                    Don't have an account? <a href="#" id="show-register">Register</a>
+                </div>
+            </form>
+        </div>
 
-  <!-- Controls -->
-  <footer class="glass p-6 shadow-inner flex items-center justify-center space-x-6 rounded-t-lg">
-    <button id="startBtn" class="bg-white border-2 border-green-500 text-green-600 hover:bg-green-500 hover:text-white transition px-6 py-2 rounded-full flex items-center space-x-2 font-semibold shadow">
-      <phosphor-icon name="camera" weight="bold" class="w-6 h-6"></phosphor-icon>
-      <span>Start</span>
-    </button>
-    <button id="callBtn" disabled class="bg-green-500 text-white opacity-50 cursor-not-allowed transition px-6 py-2 rounded-full flex items-center space-x-2 font-semibold shadow">
-      <phosphor-icon name="phone" weight="bold" class="w-6 h-6"></phosphor-icon>
-      <span>Call</span>
-    </button>
-    <button id="answerBtn" disabled class="bg-blue-500 text-white opacity-50 cursor-not-allowed transition px-6 py-2 rounded-full flex items-center space-x-2 font-semibold shadow">
-      <phosphor-icon name="phone-call" weight="bold" class="w-6 h-6"></phosphor-icon>
-      <span>Answer</span>
-    </button>
-  </footer>
-
-  <!-- Signaling Box (Hidden by default) -->
-  <div class="fixed inset-0 flex items-center justify-center z-50 bg-black/30 hidden" id="signalModal">
-    <div class="glass w-11/12 md:w-2/3 lg:w-1/2 rounded-2xl p-6 shadow-2xl border border-green-100">
-      <h2 class="text-xl font-semibold mb-3 text-green-700 flex items-center space-x-2">
-        <phosphor-icon name="key" weight="bold" class="w-6 h-6"></phosphor-icon>
-        <span>Signal Data</span>
-      </h2>
-      <textarea id="signalBox" rows="6" class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-green-400 transition" placeholder="Paste SDP here…"></textarea>
-      <div class="flex justify-end space-x-2">
-        <button id="closeSignal" class="px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 font-medium transition">Close</button>
-      </div>
+        <div class="form-container register-form">
+            <form>
+                <h2>Register</h2>
+                <div class="input-group">
+                    <input type="text" required>
+                    <label>Username</label>
+                </div>
+                <div class="input-group">
+                    <input type="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" required>
+                    <label>Confirm Password</label>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <div class="toggle-form">
+                    Already have an account? <a href="#" id="show-login">Login</a>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
-  <script src="js/webrtc-canvas.js"></script>
-  <script>
-    // Optional: Close modal with header button
-    document.getElementById('closeBtn').onclick = () => window.history.back();
-  </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            const showRegister = document.getElementById('show-register');
+            const showLogin = document.getElementById('show-login');
+
+            showRegister.addEventListener('click', function(e) {
+                e.preventDefault();
+                container.classList.add('active');
+            });
+
+            showLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                container.classList.remove('active');
+            });
+
+            // Create floating circles
+            function createCircles() {
+                const colors = ['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.15)', 'rgba(255, 255, 255, 0.2)'];
+                
+                for (let i = 6; i <= 15; i++) {
+                    const circle = document.createElement('div');
+                    circle.classList.add('circle');
+                    
+                    const size = Math.random() * 100 + 50;
+                    const posX = Math.random() * window.innerWidth;
+                    const posY = Math.random() * window.innerHeight;
+                    const delay = Math.random() * 10;
+                    const duration = Math.random() * 20 + 10;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    circle.style.width = `${size}px`;
+                    circle.style.height = `${size}px`;
+                    circle.style.left = `${posX}px`;
+                    circle.style.top = `${posY}px`;
+                    circle.style.animationDelay = `${delay}s`;
+                    circle.style.animationDuration = `${duration}s`;
+                    circle.style.background = color;
+                    
+                    document.body.appendChild(circle);
+                }
+            }
+
+            createCircles();
+
+            // Input field label animation
+            const inputs = document.querySelectorAll('.input-group input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    const label = this.nextElementSibling;
+                    label.style.top = '0';
+                    label.style.left = '15px';
+                    label.style.fontSize = '12px';
+                    label.style.background = '#667eea';
+                    label.style.padding = '0 5px';
+                    label.style.borderRadius = '10px';
+                });
+
+                input.addEventListener('blur', function() {
+                    const label = this.nextElementSibling;
+                    if (!this.value) {
+                        label.style.top = '50%';
+                        label.style.left = '20px';
+                        label.style.fontSize = '16px';
+                        label.style.background = 'transparent';
+                        label.style.padding = '0';
+                        label.style.borderRadius = '0';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
